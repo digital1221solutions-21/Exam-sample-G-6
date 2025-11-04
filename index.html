@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 6 Practice Exam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px; /* Adjusted padding for equal margins */
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative; /* For modal positioning */
+        }
+        
+        header {
+            background: linear-gradient(to right, #1a2a6c, #a11313);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #495057;
+        }
+        
+        .exam-content {
+            display: flex;
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+        }
+        
+        /* Styles for the new search section */
+        .search-section {
+            padding: 10px 0;
+        }
+
+        .search-label {
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            background-color: #34495e;
+            color: white;
+           
+        }
+
+        .search-input::-webkit-outer-spin-button,
+        .search-input::-webkit-inner-spin-button {
+            -webkit-appearance: none; /* Remove arrows for Chrome/Safari */
+            margin: 0;
+        }
+
+        .search-error {
+            font-size: 0.9rem;
+            color: #e74c3c;
+            margin-top: 10px;
+            min-height: 1.2em; /* Reserve space for error message */
+        }
+        
+        /* Kept old styles in case they are restored */
+        .subject-section {
+            margin-bottom: 25px;
+        }
+        
+        .subject-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        
+        .question-number {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #34495e;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .question-number:hover {
+            background-color: #3498db;
+            transform: scale(1.1);
+        }
+        
+        .question-number.current {
+            background-color: #e74c3c;
+            transform: scale(1.1);
+        }
+        
+        .question-number.answered {
+            background-color: #2ecc71;
+        }
+        
+        .question-area {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .subject-indicator {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .option {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            background-color: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .option.correct {
+            background-color: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+        }
+        
+        .option.incorrect {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+        }
+        
+        .option-label {
+            display: inline-block;
+            width: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+        
+        .btn {
+            padding: 8px 18px; /* Minimized padding */
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem; /* Minimized font size */
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Minimized gap */
+        }
+        
+        .btn-prev {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .btn-prev:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .btn-next {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-submit {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-submit:hover {
+            background-color: #27ae60;
+        }
+
+        /* New AI Button Style */
+        .btn-ai {
+            background-color: #8e44ad;
+            color: white;
+            margin-top: 15px;
+        }
+        .btn-ai:hover {
+            background-color: #732d91;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .results {
+            padding: 30px;
+            text-align: center;
+            display: none;
+        }
+        
+        .results h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+        
+        .score-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .subject-score {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            min-width: 150px;
+        }
+        
+        .subject-score h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .subject-score-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .restart-btn {
+            background-color: #e74c3c;
+            color: white;
+            margin: 20px auto;
+        }
+        
+        .restart-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* AI Modal Styles */
+        .ai-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ai-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .ai-modal-content h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .ai-modal-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .ai-modal-close {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .ai-modal-close:hover,
+        .ai-modal-close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* Loader for AI response */
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .exam-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Grade 6 Practice Exam</h1>
+            <p class="subtitle">Test your knowledge in Earth Science, Life Science, and Physical Science</p>
+        </header>
+        
+        <div class="instructions">
+            <p>Select your answer for each question. You can navigate between questions using the Previous and Next buttons.</p>
+        </div>
+        
+        <div class="exam-content">
+            <div class="sidebar">
+                
+                <div class="search-section">
+                    <h3 class="subject-title">Find Question</h3>
+                    <label for="question-search" class="search-label">Enter question number (1-50):</label>
+                    <input type="number" id="question-search" class="search-input" min="1" max="50" placeholder="e.g., 25">
+                    <p id="search-error" class="search-error"></p>
+                </div>
+
+                <!-- Removed the old subject-section grids -->
+                
+            </div>
+            
+            <div class="question-area">
+                <div class="question-header">
+                    <div class="subject-indicator" id="subject-indicator">Earth Science</div>
+                    <div class="question-counter" id="question-counter">Question 1 of 50</div>
+                </div>
+                
+                <div class="question-text" id="question-text">
+                    What is the main source of energy for the Earth's climate system?
+                </div>
+                
+                <div class="options" id="options-container">
+                    <!-- Options will be generated by JavaScript -->
+                </div>
+                
+                <div class="feedback" id="feedback">
+                    <!-- Feedback will be shown here -->
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn btn-prev" id="prev-btn">
+                        <span>←</span> Previous
+                    </button>
+                    <button class="btn btn-next" id="next-btn">
+                        Next <span>→</span>
+                    </button>
+                    <button class="btn btn-submit" id="submit-btn" style="display: none;">
+                        Submit Exam
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <h2>Exam Results</h2>
+            <div class="score" id="total-score">0/50</div>
+            <p id="results-message">Based on your performance, you need more practice in some areas.</p>
+            
+            <div class="score-breakdown">
+                <div class="subject-score">
+                    <h3>Earth Science</h3>
+                    <div class="subject-score-value" id="earth-score">0/15</div>
+                </div>
+                <div class="subject-score">
+                    <h3>Life Science</h3>
+                    <div class="subject-score-value" id="life-score">0/20</div>
+                </div>
+                <div class="subject-score">
+                    <h3>Physical Science</h3>
+                    <div class="subject-score-value" id="physical-score">0/15</div> <!-- Fixed typo here -->
+                </div>
+            </div>
+            
+            <button class="btn restart-btn" id="restart-btn">Take Exam Again</button>
+        </div>
+    </div>
+
+    <!-- AI Explanation Modal -->
+    <div id="ai-modal" class="ai-modal">
+        <div class="ai-modal-content" id="ai-modal-content-box">
+            <span class="ai-modal-close" id="ai-modal-close">&times;</span>
+            <!-- AI content will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        // Exam questions data
+        const examData = [
+            // Earth Science (1-15)
+            {
+                id: 1,
+                subject: "Earth Science",
+                question: "What is the main source of energy for the Earth's climate system?",
+                options: ["The Moon", "The Sun", "The stars", "The Earth's core"],
+                correctAnswer: 1
+            },
+            {
+                id: 2,
+                subject: "Earth Science",
+                question: "Which layer of Earth is made mostly of liquid iron and nickel?",
+                options: ["Crust", "Mantle", "Inner core", "Outer core"],
+                correctAnswer: 3
+            },
+            {
+                id: 3,
+                subject: "Earth Science",
+                question: "The movement of tectonic plates causes —",
+                options: ["Cloud formation", "Earthquakes", "Photosynthesis", "Ocean tides"],
+                correctAnswer: 1
+            },
+            {
+                id: 4,
+                subject: "Earth Science",
+                question: "Which of these best describes weathering?",
+                options: ["The breaking down of rocks", "Movement of sediment", "Rock formation", "Heat from the sun"],
+                correctAnswer: 0
+            },
+            {
+                id: 5,
+                subject: "Earth Science",
+                question: "What do we call a naturally occurring solid made of minerals?",
+                options: ["Soil", "Rock", "Lava", "Sand"],
+                correctAnswer: 1
+            },
+            {
+                id: 6,
+                subject: "Earth Science",
+                question: "What is the term for water turning into vapor?",
+                options: ["Condensation", "Precipitation", "Evaporation", "Infiltration"],
+                correctAnswer: 2
+            },
+            {
+                id: 7,
+                subject: "Earth Science",
+                question: "The process of water moving through the environment is called —",
+                options: ["The carbon cycle", "The water cycle", "The nitrogen cycle", "The rock cycle"],
+                correctAnswer: 1
+            },
+            {
+                id: 8,
+                subject: "Earth Science",
+                question: "Which tool measures air pressure?",
+                options: ["Thermometer", "Barometer", "Anemometer", "Rain gauge"],
+                correctAnswer: 1
+            },
+            {
+                id: 9,
+                subject: "Earth Science",
+                question: "The force that pulls all objects toward Earth's center is —",
+                options: ["Friction", "Magnetisim", "Gravity", "Pressure"],
+                correctAnswer: 2
+            },
+            {
+                id: 10,
+                subject: "Earth Science",
+                question: "Which of these describes a renewable resource?",
+                options: ["Coal", "Oil", "Wind", "Natural gas"],
+                correctAnswer: 2
+            },
+            {
+                id: 11,
+                subject: "Earth Science",
+                question: "A volcanic eruption is caused by —",
+                options: ["Water erosion", "Cooling magma", "Pressure from magma below Earth's crust", "Movement of air masses"],
+                correctAnswer: 2
+            },
+            {
+                id: 12,
+                subject: "Earth Science",
+                question: "What do we call the shaking of Earth's surface caused by movement of rock layers?",
+                options: ["Erosion", "Earthquake", "Volcano", "Glacier"],
+                correctAnswer: 1
+            },
+            {
+                id: 13,
+                subject: "Earth Science",
+                question: "Which best explains why we have day and night?",
+                options: ["Earth's revolution around the Sun", "The Moon's orbit", "Earth's rotation on its axis", "The tilt of Earth's axis"],
+                correctAnswer: 2
+            },
+            {
+                id: 14,
+                subject: "Earth Science",
+                question: "What causes the different seasons on Earth?",
+                options: ["Distance from the Sun", "Tilt of Earth's axis", "Earth's speed", "Shape of the orbit"],
+                correctAnswer: 1
+            },
+            {
+                id: 15,
+                subject: "Earth Science",
+                question: "Which part of the atmosphere contains most of Earth's weather?",
+                options: ["Stratosphere", "Mesosphere", "Thermosphere", "Troposphere"],
+                correctAnswer: 3
+            },
+            // Life Science (16-35)
+            {
+                id: 16,
+                subject: "Life Science",
+                question: "What is the basic unit of life?",
+                options: ["Atom", "Cell", "Tissue", "Organ"],
+                correctAnswer: 1
+            },
+            {
+                id: 17,
+                subject: "Life Science",
+                question: "Which organ system is responsible for transporting oxygen through the body?",
+                options: ["Digestive system", "Circulatory system", "Nervous system", "Muscular system"],
+                correctAnswer: 1
+            },
+            {
+                id: 18,
+                subject: "Life Science",
+                question: "Which part of a plant makes food through photosynthesis?",
+                options: ["Stem", "Leaf", "Root", "Flower"],
+                correctAnswer: 1
+            },
+            {
+                id: 19,
+                subject: "Life Science",
+                question: "What gas do plants take in during photosynthesis?",
+                options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+                correctAnswer: 1
+            },
+            {
+                id: 20,
+                subject: "Life Science",
+                question: "Which organ helps humans breathe in oxygen?",
+                options: ["Heart", "Lungs", "Liver", "Stomach"],
+                correctAnswer: 1
+            },
+            {
+                id: 21,
+                subject: "Life Science",
+                question: "What type of energy do plants use to make food?",
+                options: ["Heat energy", "Light energy", "Chemical energy", "Sound energy"],
+                correctAnswer: 1
+            },
+            {
+                id: 22,
+                subject: "Life Science",
+                question: "Which characteristic do all living things share?",
+                options: ["Ability to talk", "Need for sunlight", "Ability to grow and reproduce", "Ability to fly"],
+                correctAnswer: 2
+            },
+            {
+                id: 23,
+                subject: "Life Science",
+                question: "Which of the following is a vertebrate?",
+                options: ["Spider", "Worm", "Fish", "Snail"],
+                correctAnswer: 2
+            },
+            {
+                id: 24,
+                subject: "Life Science",
+                question: "Which level of organization comes after cell?",
+                options: ["Organ system", "Tissue", "Organ", "Organism"],
+                correctAnswer: 1
+            },
+            {
+                id: 25,
+                subject: "Life Science",
+                question: "What do we call an animal that eats only plants?",
+                options: ["Carnivore", "Herbivore", "Omnivore", "Decomposer"],
+                correctAnswer: 1
+            },
+            {
+                id: 26,
+                subject: "Life Science",
+                question: "What happens during respiration in living cells?",
+                options: ["Water is absorbed", "Oxygen is released", "Energy is produced", "Food is stored"],
+                correctAnswer: 2
+            },
+            {
+                id: 27,
+                subject: "Life Science",
+                question: "Which body system controls movement and coordination?",
+                options: ["Nervous system", "Circulatory system", "Digestive system", "Skeletal system"],
+                correctAnswer: 0
+            },
+            {
+                id: 28,
+                subject: "Life Science",
+                question: "What is a food chain?",
+                options: ["A process of recycling", "A sequence showing how energy moves between organisms", "A type of ecosystem", "A water cycle pattern"],
+                correctAnswer: 1
+            },
+            {
+                id: 29,
+                subject: "Life Science",
+                question: "What type of adaptation helps a polar bear survive cold climates?",
+                options: ["Short fur", "Thick layer of fat", "Long claws for climbing trees", "Bright colors"],
+                correctAnswer: 1
+            },
+            {
+                id: 30,
+                subject: "Life Science",
+                question: "What happens to energy as it moves through a food chain?",
+                options: ["It increases", "It decreases", "It stays the same", "It disappears"],
+                correctAnswer: 1
+            },
+            {
+                id: 31,
+                subject: "Life Science",
+                question: "What do we call an organism that breaks down dead material?",
+                options: ["Producer", "Consumer", "Decomposer", "Predator"],
+                correctAnswer: 2
+            },
+            {
+                id: 32,
+                subject: "Life Science",
+                question: "What is the main function of roots in plants?",
+                options: ["Absorb sunlight", "Take in water and minerals", "Attract insects", "Produce flowers"],
+                correctAnswer: 1
+            },
+            {
+                id: 33,
+                subject: "Life Science",
+                question: "What helps a fish breathe underwater?",
+                options: ["Gills", "Lungs", "Fins", "Scales"],
+                correctAnswer: 0
+            },
+            {
+                id: 34,
+                subject: "Life Science",
+                question: "Which organ system provides structure and protects organs?",
+                options: ["Muscular system", "Skeletal system", "Digestive system", "Circulatory system"],
+                correctAnswer: 1
+            },
+            {
+                id: 35,
+                subject: "Life Science",
+                question: "A community of organisms interacting with their environment is called —",
+                options: ["Habitat", "Population", "Ecosystem", "Food web"],
+                correctAnswer: 2
+            },
+            // Physical Science (36-50)
+            {
+                id: 36,
+                subject: "Physical Science",
+                question: "Matter is anything that —",
+                options: ["Has mass and takes up space", "Moves quickly", "Produces light", "Can be seen"],
+                correctAnswer: 0
+            },
+            {
+                id: 37,
+                subject: "Physical Science",
+                question: "The smallest particle of an element is a —",
+                options: ["Molecule", "Atom", "Cell", "Compound"],
+                correctAnswer: 1
+            },
+            {
+                id: 38,
+                subject: "Physical Science",
+                question: "Which of the following is a chemical change?",
+                options: ["Ice melting", "Water boiling", "Iron rusting", "Sugar dissolving"],
+                correctAnswer: 2
+            },
+            {
+                id: 39,
+                subject: "Physical Science",
+                question: "Which state of matter has a definite shape and volume?",
+                options: ["Solid", "Liquid", "Gas", "Plasma"],
+                correctAnswer: 0
+            },
+            {
+                id: 40,
+                subject: "Physical Science",
+                question: "When heat is added to a liquid, it may —",
+                options: ["Freeze", "Boil", "Condense", "Solidify"],
+                correctAnswer: 1
+            },
+            {
+                id: 41,
+                subject: "Physical Science",
+                question: "What tool measures temperature?",
+                options: ["Thermometer", "Barometer", "Compass", "Ruler"],
+                correctAnswer: 0
+            },
+            {
+                id: 42,
+                subject: "Physical Science",
+                question: "The ability to do work is called —",
+                options: ["Heat", "Energy", "Force", "Power"],
+                correctAnswer: 1
+            },
+            {
+                id: 43,
+                subject: "Physical Science",
+                question: "Which of the following is an example of kinetic energy?",
+                options: ["A rock sitting on a hill", "A ball rolling down a hill", "A battery in a flashlight", "A stretched rubber band"],
+                correctAnswer: 1
+            },
+            {
+                id: 44,
+                subject: "Physical Science",
+                question: "What type of energy is stored in food?",
+                options: ["Electrical energy", "Light energy", "Chemical energy", "Thermal energy"],
+                correctAnswer: 2
+            },
+            {
+                id: 45,
+                subject: "Physical Science",
+                question: "When light bounces off a surface, it is called —",
+                options: ["Reflection", "Refraction", "Absorption", "Transmission"],
+                correctAnswer: 0
+            },
+            {
+                id: 46,
+                subject: "Physical Science",
+                question: "Which of these is a conductor of electricity?",
+                options: ["Plastic", "Wood", "Copper", "Rubber"],
+                correctAnswer: 2
+            },
+            {
+                id: 47,
+                subject: "Physical Science",
+                question: "Sound travels fastest through —",
+                options: ["Air", "Water", "Steel", "Vacuum"],
+                correctAnswer: 2
+            },
+            {
+                id: 48,
+                subject: "Physical Science",
+                question: "Which of these is an example of a simple machine?",
+                options: ["Screwdriver", "Electric motor", "Television", "Flashlight"],
+                correctAnswer: 0
+            },
+            {
+                id: 49,
+                subject: "Physical Science",
+                question: "What force slows down moving objects?",
+                options: ["Gravity", "Friction", "Magnetism", "Pressure"],
+                correctAnswer: 1
+            },
+            {
+                id: 50,
+                subject: "Physical Science",
+                question: "What kind of energy transformation occurs when a flashlight is turned on?",
+                options: ["Heat to light", "Electrical to light", "Sound to electrical", "Chemical to sound"],
+                correctAnswer: 1
+            }
+        ];
+
+        // Initialize the exam
+        let currentQuestion = 0;
+        let userAnswers = new Array(examData.length).fill(null);
+        let examSubmitted = false;
+
+        // DOM elements
+        const subjectIndicator = document.getElementById('subject-indicator');
+        const questionCounter = document.getElementById('question-counter');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedback = document.getElementById('feedback');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const results = document.getElementById('results');
+        const totalScore = document.getElementById('total-score');
+        const earthScore = document.getElementById('earth-score');
+        const lifeScore = document.getElementById('life-score');
+        const physicalScore = document.getElementById('physical-score');
+        const resultsMessage = document.getElementById('results-message');
+        const restartBtn = document.getElementById('restart-btn');
+        
+        // New search elements
+        const searchInput = document.getElementById('question-search');
+        const searchError = document.getElementById('search-error');
+
+        // New AI Modal elements
+        const aiModal = document.getElementById('ai-modal');
+        const aiModalContent = document.getElementById('ai-modal-content-box');
+        const aiModalClose = document.getElementById('ai-modal-close');
+
+        // --- Gemini API Call Function ---
+        
+        /**
+         * Calls the Gemini API to get an explanation.
+         * @param {string} systemPrompt - The role and instructions for the AI.
+         * @param {string} userQuery - The specific question for the AI.
+         * @returns {Promise<string>} - The AI's text response.
+         */
+        async function callGeminiAPI(systemPrompt, userQuery) {
+            const apiKey = ""; // API key is handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            // Simple retry logic
+            let retries = 3;
+            while (retries > 0) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].text) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Invalid response structure from API.");
+                    }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    retries--;
+                    if (retries === 0) {
+                        throw new Error("Failed to get explanation after several attempts.");
+                    }
+                    // Wait 1 second before retrying
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+        }
+
+        // --- End Gemini API Function ---
+
+        // Display current question
+        function displayQuestion() {
+            const question = examData[currentQuestion];
+            
+            // Update question counter and subject
+            questionCounter.textContent = `Question ${currentQuestion + 1} of ${examData.length}`;
+            subjectIndicator.textContent = question.subject;
+            
+            // Update question text
+            questionText.textContent = question.question;
+            
+            // Clear options container
+            optionsContainer.innerHTML = '';
+            
+            // Add options
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                
+                // If exam is submitted, show correct/incorrect answers
+                if (examSubmitted) {
+                    if (index === question.correctAnswer) {
+                        optionElement.classList.add('correct');
+                    } else if (userAnswers[currentQuestion] === index && index !== question.correctAnswer) {
+                        optionElement.classList.add('incorrect');
+                    }
+                } else if (userAnswers[currentQuestion] === index) {
+                    optionElement.classList.add('selected');
+                }
+                
+                optionElement.innerHTML = `
+                    <span class="option-label">${String.fromCharCode(65 + index)}</span>
+                    <span class="option-text">${option}</span>
+                `;
+                
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update navigation buttons
+            prevBtn.style.display = currentQuestion === 0 ? 'none' : 'flex';
+            
+            if (currentQuestion === examData.length - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = examSubmitted ? 'none' : 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+            
+            // Hide feedback if not submitted
+            if (!examSubmitted) {
+                feedback.style.display = 'none';
+            }
+        }
+
+        // Select an option
+        function selectOption(optionIndex) {
+            if (examSubmitted) return;
+            
+            userAnswers[currentQuestion] = optionIndex;
+            displayQuestion();
+            
+            // Show immediate feedback
+            const question = examData[currentQuestion];
+            let feedbackHTML = "";
+
+            if (optionIndex === question.correctAnswer) {
+                feedback.textContent = "Correct! Well done.";
+                feedback.className = "feedback correct";
+                feedbackHTML = "<p>Correct! Well done.</p>";
+            } else {
+                feedback.textContent = `Incorrect. The correct answer is ${String.fromCharCode(65 + question.correctAnswer)}: ${question.options[question.correctAnswer]}`;
+                feedback.className = "feedback incorrect";
+                feedbackHTML = `<p>Incorrect. The correct answer is <strong>${String.fromCharCode(65 + question.correctAnswer)}: ${question.options[question.correctAnswer]}</strong></p>`;
+            }
+
+            // Add the new AI Explain button
+            feedbackHTML += `<button class="btn btn-ai" id="ai-explain-btn">✨ Get Explanation</button>`;
+            feedback.innerHTML = feedbackHTML;
+            feedback.style.display = 'block';
+
+            // Add event listener to the newly created button
+            document.getElementById('ai-explain-btn').addEventListener('click', getAIExplanation);
+        }
+
+        // New function to get AI Explanation
+        async function getAIExplanation() {
+            // Show modal and loader
+            aiModal.style.display = 'flex';
+            aiModalContent.innerHTML = `
+                <span class="ai-modal-close" id="ai-modal-close-inner">&times;</span>
+                <h3>Loading Explanation...</h3>
+                <div class="loader"></div>
+            `;
+            document.getElementById('ai-modal-close-inner').addEventListener('click', closeModal);
+
+            // Get question context
+            const question = examData[currentQuestion];
+            const questionText = question.question;
+            const correctAnswer = question.options[question.correctAnswer];
+            const userAnswerIndex = userAnswers[currentQuestion];
+            const userAnswer = question.options[userAnswerIndex];
+
+            // Build the prompts
+            const systemPrompt = "You are a friendly and encouraging 6th-grade science tutor. Explain concepts in a simple, clear, and easy-to-understand way. Do not just give the answer, explain the 'why' behind it in one or two short paragraphs.";
+            
+            let userQuery;
+            if (userAnswer === correctAnswer) {
+                userQuery = `My 6th-grade practice question is: "${questionText}". The correct answer is "${correctAnswer}". I got it right, but can you please explain *why* this is the correct answer?`;
+            } else {
+                userQuery = `My 6th-grade practice question is: "${questionText}". The options were: ${question.options.join(', ')}. I chose "${userAnswer}", but the correct answer is "${correctAnswer}". Can you please explain *why* "${correctAnswer}" is right and *why* "${userAnswer}" is wrong?`;
+            }
+
+            // Call API
+            try {
+                const explanation = await callGeminiAPI(systemPrompt, userQuery);
+                
+                // Sanitize and format response
+                const formattedExplanation = explanation
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\n/g, '<br>');
+
+                aiModalContent.innerHTML = `
+                    <span class="ai-modal-close" id="ai-modal-close-inner">&times;</span>
+                    <h3>✨ AI Tutor Explanation</h3>
+                    <p>${formattedExplanation}</p>
+                    <button class="btn btn-next" id="ai-modal-close-btn-bottom">Got it!</button>
+                `;
+                document.getElementById('ai-modal-close-inner').addEventListener('click', closeModal);
+                document.getElementById('ai-modal-close-btn-bottom').addEventListener('click', closeModal);
+
+            } catch (error) {
+                aiModalContent.innerHTML = `
+                    <span class="ai-modal-close" id="ai-modal-close-inner">&times;</span>
+                    <h3>Error</h3>
+                    <p>Sorry, I couldn't get an explanation right now. Please try again later.</p>
+                    <button class="btn btn-prev" id="ai-modal-close-btn-bottom">Close</button>
+                `;
+                document.getElementById('ai-modal-close-inner').addEventListener('click', closeModal);
+                document.getElementById('ai-modal-close-btn-bottom').addEventListener('click', closeModal);
+            }
+        }
+
+        // New function to close the modal
+        function closeModal() {
+            aiModal.style.display = 'none';
+        }
+
+        // Add modal close listeners
+        aiModalClose.addEventListener('click', closeModal);
+        aiModal.addEventListener('click', (event) => {
+            if (event.target === aiModal) { // Close if clicking on the background
+                closeModal();
+            }
+        });
+
+
+        // Navigate to a specific question
+        function goToQuestion(index) {
+            currentQuestion = index;
+            displayQuestion();
+        }
+
+        // Submit the exam
+        function submitExam() {
+            examSubmitted = true;
+            
+            // Calculate scores
+            let earthCorrect = 0;
+            let lifeCorrect = 0;
+            let physicalCorrect = 0;
+            
+            examData.forEach((question, index) => {
+                if (userAnswers[index] === question.correctAnswer) {
+                    if (index < 15) earthCorrect++;
+                    else if (index < 35) lifeCorrect++;
+                    else physicalCorrect++;
+                }
+            });
+            
+            const totalCorrect = earthCorrect + lifeCorrect + physicalCorrect;
+            
+            // Display results
+            totalScore.textContent = `${totalCorrect}/${examData.length}`;
+            earthScore.textContent = `${earthCorrect}/15`;
+            lifeScore.textContent = `${lifeCorrect}/20`;
+            physicalScore.textContent = `${physicalCorrect}/15`;
+            
+            // Set results message based on performance
+            if (totalCorrect >= 45) {
+                resultsMessage.textContent = "Excellent! You have a strong understanding of all science topics.";
+            } else if (totalCorrect >= 35) {
+                resultsMessage.textContent = "Good job! You have a solid foundation in science.";
+            } else if (totalCorrect >= 25) {
+                resultsMessage.textContent = "Not bad! With a bit more practice, you'll master these concepts.";
+            } else {
+                resultsMessage.textContent = "Keep studying! Review the material and try again.";
+            }
+            
+            // Show results and hide exam
+            document.querySelector('.exam-content').style.display = 'none';
+            results.style.display = 'block';
+        }
+
+        // Restart the exam
+        function restartExam() {
+            currentQuestion = 0;
+            userAnswers = new Array(examData.length).fill(null);
+            examSubmitted = false;
+            
+            // Show exam and hide results
+            document.querySelector('.exam-content').style.display = 'flex';
+            results.style.display = 'none';
+            
+            displayQuestion();
+        }
+
+V
+
+        // Event listeners
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < examData.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            }
+        });
+
+        submitBtn.addEventListener('click', submitExam);
+        restartBtn.addEventListener('click', restartExam);
+
+        // New event listener for the search input
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                searchError.textContent = ''; // Clear previous error
+                const questionNum = parseInt(searchInput.value);
+                
+                if (questionNum >= 1 && questionNum <= examData.length) {
+                    goToQuestion(questionNum - 1); // Go to 0-based index
+                    searchInput.value = ''; // Clear the input
+                    searchInput.blur(); // Remove focus from input
+                } else {
+                    searchError.textContent = `Please enter a number between 1 and ${examData.length}.`;
+                }
+            }
+        });
+
+        // Initialize the app
+        displayQuestion();
+    </script>
+</body>
+</html>
